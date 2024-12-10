@@ -1,9 +1,9 @@
 
 ---
 
-# Project Title
+# Practice Data Science and ML
 
-_A brief description of what your project does and its purpose._
+_This Repository is for Just Practice Data Science and ML._
 
 Example:
 > **MyApp** is a task management tool designed to help users stay organized and productive. It allows users to create, track, and manage their tasks efficiently.
