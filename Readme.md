@@ -1,4 +1,3 @@
-Here’s a **template for a README file** that you can use to describe a project. This example includes general sections you might find in a typical README, with detailed explanations of what to include in each part.
 
 ---
 
