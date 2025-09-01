@@ -2,4 +2,6 @@ pandas
 openpyxl
 matplotlib
 scipy
+tensorflow
 kagglehub
+scikit-learn
