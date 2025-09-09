@@ -5,3 +5,7 @@ scipy
 tensorflow
 kagglehub
 scikit-learn
+torch
+torchvision
+tqdm
+ipywidgets
