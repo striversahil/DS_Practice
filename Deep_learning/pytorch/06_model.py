@@ -6,9 +6,10 @@ from tqdm import tqdm
 
 
 class Model(nn.Module):
-    def __init__(self, model , model_path , loss_fn , device , batch_size , learning_rate , start_from_checkpoint = False):
+    def __init__(self, model , model_name , model_path , loss_fn , device , batch_size , learning_rate , start_from_checkpoint = False):
         super().__init__()
         self.model = model
+        self.model_name = model_name
         self.model_path = model_path
         self.optimizer = None
         self.loss_fn = loss_fn
@@ -18,7 +19,7 @@ class Model(nn.Module):
         self.start_from_checkpoint = start_from_checkpoint
 
         # save path is the path where the model will be saved after training
-        self.save_path = os.path.join(self.model_path , model , '.pt')
+        self.save_path = os.path.join(self.model_path , self.model_name + ".pth")
         
 
         self.training_loss = []
