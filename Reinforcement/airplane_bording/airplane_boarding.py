@@ -1,6 +1,7 @@
 import gymnasium as gym
 import gymnasium.spaces as spaces
 from gymnasium.envs.registration import register
+import numpy as np
 
 # Once registered, you can create the environment using: gym.make("AirplaneBoarding-v0")
 register(
@@ -133,7 +134,34 @@ class Seat:
         
         assert passenger.row_no == self.row_no , "Passenger row number does not match seat row number"
         assert passenger.seat_no == self.seat_no , "Passenger seat number does not match seat number"
-        assert self.passenger is None , "Seat is already occupied"
+        
+        if passenger.is_carrying_baggage:
+            passenger.status = PassengerStatus.STANDING
+            passenger.is_carrying_baggage = False  # Baggage is stowed
+            return False  # Passenger is standing to stow baggage
+        
+        else:
+            self.passenger = passenger
+            self.passenger.status = PassengerStatus.SEATED
+            return True  # Passenger is seated
+        
+    def __str__(self):
+        return f"{self.seat_no}"
+
+class AirplaneRow:
+    def __init__(self, row_num, seats_per_row):
+        self.row_num = row_num
+        self.seats = [Seat(row_num * seats_per_row + i, row_num) for i in range(seats_per_row)]
+
+    def try_sit_passenger(self, passenger: Passenger):
+        # Check if passenger's seat is in this row
+        found_seats = list(filter(lambda seats: seats.seat_num == passenger.seat_num, self.seats))
+
+        if found_seats:
+            found_seat: Seat = found_seats[0]
+            return found_seat.seat_passenger(passenger)
+
+        return False
     
         
 class AirplaneBoardingEnv(gym.Env):
@@ -141,22 +169,155 @@ class AirplaneBoardingEnv(gym.Env):
 
     metadata = {"render_modes": ["human"], "render_fps": 4}
 
-    def __init__(self , render_mode=None):
+    def __init__(self , render_mode=None , seats_per_row=6 , num_rows=30):
+
+        self.seats_per_row = seats_per_row
+        self.num_rows = num_rows
+        self.no_of_seats = self.seats_per_row * self.num_rows
+        self.render_mode = render_mode
         
         # Resets the environment to an initial state
         self.reset()
 
-    def reset(self, seed=None, options=None):
+        self.action_space = spaces.Discrete(self.num_rows)  # Action is to select a row to board from
 
-        super().reset()
+        self.observation_space = spaces.Box(
+            low=-1,
+            high=self.no_of_seats ,
+            shape=(self.no_of_seats * 2 ,),
+            dtype=np.int32,
+        )
+        
+
+    def reset(self, seed=None, options=None):
+        super().reset(seed=seed)
+
+        # Initialize the environment state
+        self.lobby = Lobby(self.num_rows , self.seats_per_row)
+        self.airplane = [AirplaneRow(i , self.seats_per_row) for i in range(1 , self.num_rows + 1)]
+        self.boarding_area = BoardingArea(self.num_rows)
+
+        self.render()
+
+        return self._getobservation() , {}
+    
+    def _getobservation(self):
+        """Get the Observation of the current state."""
+        observation = []
+
+        for passenger in self.boarding_area.line:
+            if passenger is None:
+                observation.append(-1)
+                observation.append(-1)
+            else:
+                observation.append(passenger.seat_no)
+                observation.append(passenger.status.value)
+
+        return np.array(observation , dtype=np.int32)
 
     # Takes an action and returns the next state, reward, observation, and info
-    def step(self, action):
-        return super().step(action)
+
+    def step(self, row_num):
+        assert row_num>=0 and row_num<self.num_of_rows, f"Invalid row number {row_num}"
+
+        reward = 0
+
+        passenger = self.lobby.remove_passenger(row_num)
+        self.boarding_line.add_passenger(passenger)
+
+        # If there are passengers in the lobby, move the line once
+        if self.lobby.count_passengers()>0:
+            self._move()
+            reward = self._calculate_reward()
+        else:
+            # No more passengers in the lobby, so no more actions to choose from, move the line until all passengers are seated
+            while self.is_onboarding():
+                self._move()
+                reward += self._calculate_reward()
+
+        if self.is_onboarding():
+            terminated = False
+        else:
+            terminated = True
+
+        # Gym requires returning the observation, reward, terminated, truncated, and info dictionary.
+        return self._get_observation(), reward, terminated, False, {}
+    
+    def _move(self):
+
+        for row_num, passenger in enumerate(self.boarding_line.line):
+            if passenger is None:
+                continue
+
+            # If outside of airplane's aisle
+            if row_num >= len(self.airplane_rows):
+                break
+
+            # Try to sit passenger, if successful, remove from line
+            if self.airplane_rows[row_num].try_sit_passenger(passenger):
+                self.boarding_line.line[row_num] = None
+
+        # Move line forward
+        self.boarding_line.move_forward()
+
+        self.render()
+
+
+    def _reward(self):
+        """Calculate the reward for the current state."""
+        reward = 0
+
+        # Reward for each seated passenger
+        for airplane_row in self.airplane:
+            for seat in airplane_row.seats:
+                if seat.passenger is not None and seat.passenger.status == PassengerStatus.SEATED:
+                    reward += 1
+
+        # Penalty for each waiting passenger in the boarding area
+        reward -= self.boarding_area.no_of_waiting_passengers() * 0.5
+
+        # Penalty for each moving passenger in the boarding area
+        reward -= self.boarding_area.no_of_moving_passengers() * 0.2
+
+        return reward
+
+    def is_boarding_complete(self):
+        """Check if boarding is complete."""
+        if self.lobby.count_passengers() == 0 and not self.boarding_area.is_onboarding():
+            return True
+        return False
 
     # Renders the environment to the screen or other modes
     def render(self):
-        pass
+        if self.render_mode is None:
+            return
+        
+        if self.render_mode == "terminal":
+            print("\n" + "="*50)
+            print("Lobby:")
+            for row in self.lobby.lobby_rows:
+                print(f"Row {row.row_no:02d}: " + " ".join(str(passenger) for passenger in row.passengers))
+            
+            print("\nBoarding Area:")
+            boarding_area_str = []
+            for passenger in self.boarding_area.line:
+                if passenger is None:
+                    boarding_area_str.append(" . ")
+                else:
+                    boarding_area_str.append(f"{str(passenger):>2} ")
+            print("".join(boarding_area_str))
+            
+            print("\nAirplane Seating:")
+            for airplane_row in self.airplane:
+                seats_str = []
+                for seat in airplane_row.seats:
+                    if seat.passenger is None:
+                        seats_str.append(" . ")
+                    else:
+                        seats_str.append(f"{str(seat.passenger):>2} ")
+                print(f"Row {airplane_row.row_num:02d}: " + "".join(seats_str))
+            print("="*50 + "\n")
+
 
 
 
@@ -174,4 +335,32 @@ def custom_check_env():
 
 
 if __name__ == "__main__":
-    custom_check_env()
+    # my_check_env()
+
+    env = gym.make('airplane-boarding-v0', num_of_rows=10, seats_per_row=5, render_mode='terminal')
+
+    observation, _ = env.reset()
+    terminated = False
+    total_reward = 0
+    step_count = 0
+
+    while not terminated:
+        # Choose random action
+        action = env.action_space.sample()
+
+        # Skip action if invalid
+        masks = env.unwrapped.action_masks()
+        if(masks[action]==False):
+            continue
+
+        # Perform action
+        observation, reward, terminated, _, _ = env.step(action)
+        total_reward += reward
+
+        step_count+=1
+
+        print(f"Step {step_count} Action: {action}")
+        print(f"Observation: {observation}")
+        print(f"Reward: {reward}\n")
+
+    print(f"Total Reward: {total_reward}")
