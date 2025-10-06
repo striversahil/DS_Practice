@@ -318,7 +318,18 @@ class AirplaneBoardingEnv(gym.Env):
                 print(f"Row {airplane_row.row_num:02d}: " + "".join(seats_str))
             print("="*50 + "\n")
 
+    # This method is used to mask the actions that are allowed
+    # This will return True for allowed actions and False for disallowed actions
+    def action_masks(self) -> list[bool]:
+        mask = []
 
+        for row in self.lobby.lobby_rows:
+            if len(row.passengers) == 0:
+                mask.append(False)
+            else:
+                mask.append(True)
+
+        return mask
 
 
 # Check the validity of the custom environment
