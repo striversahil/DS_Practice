@@ -1,41 +1,50 @@
-Here's a summary of the course content by week:
+Here's a concise summary of the course content for each week:
 
 ---
 
-### Course Overview & Resources Summary
+### Course Overview & Resources
 
-*   **Main Objectives:** To introduce the course structure, grading policy, and essential conduct guidelines (academic and non-academic, including cyberbullying and sexual harassment). It also outlines available support services and supplementary learning materials.
-*   **Key Takeaways:** Learners gain an understanding of course expectations, ethical conduct required at IITM BS, and how to access lecture transcripts, slides, solutions, and recorded sessions.
-*   **Notable Progress/Challenges:** This foundational section sets the stage for the course, ensuring learners are aware of policies and resources before diving into technical content.
+This section serves as a foundational introduction to the course.
+*   **Main Objectives:** Familiarize learners with the course structure, grading policy, and academic/non-academic conduct guidelines specific to IITM BS.
+*   **Key Takeaways:** Understanding of course expectations, available support services, and ethical responsibilities (web etiquette, academic malpractice, cyberbullying, sexual harassment).
+*   **Resources:** Access to lecture transcripts, slides, graded assignment solutions, and recorded live sessions for comprehensive learning.
 
 ---
 
 ### Week 0 Summary
 
-*   **Main Objectives:** To provide important initial instructions and links for learners, and to conduct a review of fundamental Linear Algebra concepts, specifically focusing on vectors, matrices, and array operations using NumPy.
-*   **Key Takeaways:** Learners should refresh their understanding of linear algebra basics and become proficient with NumPy for numerical computations, which is crucial for subsequent machine learning topics.
-*   **Notable Progress:** Completion of several non-graded practice programming assignments helps learners solidify their NumPy skills and prepare for graded tasks.
+This week focuses on crucial preparatory steps before diving into core machine learning concepts.
+*   **Main Objectives:** Provide essential course instructions and links, and review fundamental linear algebra concepts necessary for machine learning.
+*   **Key Takeaways:** Learners refresh their understanding of vectors and matrices, and gain practical experience using NumPy for linear algebra operations.
+*   **Notable Progress:** Establishes a solid mathematical and programming foundation through a linear algebra review and hands-on practice with NumPy.
+*   **Activities:** Important instructions and links, 5 not-graded practice programming assignments to build familiarity with the environment and tools.
 
 ---
 
 ### Week 1 Summary
 
-*   **Main Objectives:** To introduce the field of Machine Learning, explore its various paradigms, delve into the concept of Representation Learning, and cover the basics of Principal Component Analysis (PCA).
-*   **Key Takeaways:** Learners are introduced to the core ideas of ML, different ways ML problems are approached, how data can be transformed for better representation, and PCA as a fundamental dimensionality reduction technique.
-*   **Notable Progress:** Learners engage with activity questions, a practice assignment, and complete the first set of graded assignments (one theoretical, one programming) due October 5, 2025, applying their understanding of ML introduction, representation learning, and PCA.
+The first week introduces learners to the core concepts of machine learning and a fundamental dimensionality reduction technique.
+*   **Main Objectives:** Introduce the field of Machine Learning, explore different paradigms, understand the concept of Representation Learning, and learn Principal Component Analysis (PCA).
+*   **Key Takeaways:** Learners grasp what machine learning entails, how data can be represented, and how PCA can be used for dimensionality reduction and feature extraction.
+*   **Notable Progress:** Foundation laid in machine learning theory and the practical application of PCA.
+*   **Activities:** Introduction to Machine Learning, Representation Learning (3 parts), Principal Component Analysis (2 parts), Activity Questions (not graded), Tutorial Session, 1 not-graded practice assignment, and 2 graded assignments (due October 5, 2025).
 
 ---
 
 ### Week 2 Summary
 
-*   **Main Objectives:** To address the limitations and time-complexity issues associated with standard PCA, introduce the concept of Feature Transformation, and explore advanced techniques like Kernel Functions and Kernel PCA.
-*   **Key Takeaways:** Learners understand when standard PCA might fall short, the importance of transforming features, and how kernel methods enable non-linear dimensionality reduction, extending PCA's applicability to more complex datasets.
-*   **Notable Progress:** Learners work through activity questions, a practice assignment, and complete their second set of graded assignments (theoretical and programming) due October 5, 2025, building upon their knowledge of dimensionality reduction with advanced techniques.
+Building on Week 1, this week addresses the limitations of PCA and introduces more advanced techniques for feature transformation.
+*   **Main Objectives:** Identify issues with standard PCA, understand feature transformation, and explore kernel methods, specifically Kernel PCA, to handle non-linear relationships.
+*   **Key Takeaways:** Learners understand that PCA has limitations (e.g., time complexity, linearity assumption) and how kernel functions can extend its power to complex, non-linear data structures through Kernel PCA.
+*   **Notable Progress:** Enhanced understanding of dimensionality reduction, moving from linear to non-linear methods.
+*   **Activities:** Discussions on PCA issues (including time-complexity), Feature Transformation, Kernel Functions, Kernel PCA, Activity Questions (not graded), Tutorial Session, 1 not-graded practice assignment, and 2 graded assignments (due October 5, 2025).
 
 ---
 
 ### Week 3 Summary
 
-*   **Main Objectives:** To introduce the concept of clustering as an unsupervised learning task and to deeply explore the K-means clustering algorithm, including its convergence, characteristics of produced clusters, initialization strategies (K-means++), and methods for choosing the optimal number of clusters (K).
-*   **Key Takeaways:** Learners grasp the principles of grouping unlabeled data, understand the step-by-step process of K-means, its computational aspects, and practical considerations for its effective implementation.
-*   **Notable Progress:** Learners engage with activity questions, a practice assignment, and complete their third set of graded assignments (theoretical and programming) due October 12, 2025, applying their knowledge of unsupervised clustering with K-means.
+This week marks the introduction to unsupervised learning through clustering algorithms.
+*   **Main Objectives:** Introduce the concept of clustering, delve into the K-means clustering algorithm (Lloyd's algorithm), understand its convergence properties and the nature of clusters it produces, and learn about initialization strategies and how to choose the optimal K.
+*   **Key Takeaways:** Learners understand how to group unlabeled data points into meaningful clusters using K-means, along with practical considerations like K-means++ for better initialization and methods for selecting the number of clusters (K).
+*   **Notable Progress:** First foray into unsupervised learning, mastering a widely used clustering algorithm and its practical implementation details.
+*   **Activities:** Introduction to Clustering, K-means Clustering (including convergence and cluster characteristics), K-means++ for initialization, Choice of K, Activity Questions (not graded), Tutorial Session, 1 not-graded practice assignment, and 2 graded assignments (due October 12, 2025).
